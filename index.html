@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordPress: O Motor da Web Moderna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wp-blue: #0073AA;
+    --wp-dark: #0D1B2A;
+    --wp-mid: #1A2F45;
+    --wp-accent: #00B4D8;
+    --wp-light: #E8F4FD;
+    --wp-white: #F9FBFF;
+    --wp-gold: #FFB347;
+    --text-muted: #8AAFC8;
+    --border: rgba(0,180,216,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--wp-dark);
+    color: var(--wp-white);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem;
+    background: rgba(13,27,42,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--wp-accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--wp-accent); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0; opacity: 0.07;
+    background-image:
+      linear-gradient(rgba(0,180,216,0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,180,216,0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .orb1 { width: 500px; height: 500px; background: rgba(0,115,170,0.25); top: -100px; left: -100px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(0,180,216,0.15); bottom: -50px; right: -50px; }
+
+  .hero-content { position: relative; z-index: 1; max-width: 860px; }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--wp-accent);
+    border: 1px solid rgba(0,180,216,0.4);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    margin-bottom: 2rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 span { color: var(--wp-accent); }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 580px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex; align-items: center; justify-content: center;
+    gap: 2rem; flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.2rem;
+  }
+  .meta-label {
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .meta-value { font-size: 0.9rem; color: var(--wp-white); font-weight: 500; }
+  .meta-sep { width: 1px; height: 40px; background: var(--border); }
+
+  .hero-stat {
+    margin-top: 4rem;
+    display: inline-flex; align-items: center; gap: 1rem;
+    background: rgba(0,180,216,0.08);
+    border: 1px solid rgba(0,180,216,0.2);
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+  }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; font-weight: 900;
+    color: var(--wp-accent);
+    line-height: 1;
+  }
+  .stat-text { text-align: left; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+  .stat-text strong { color: var(--wp-white); display: block; font-size: 0.95rem; }
+
+  .scroll-indicator {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.1em;
+    animation: bounce 2s infinite;
+  }
+  .scroll-indicator::after {
+    content: ''; display: block; width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--wp-accent), transparent);
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--wp-accent);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+  .section-body {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 700px;
+  }
+  .section-body strong { color: var(--wp-white); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 0 2rem;
+  }
+
+  /* ── COMPARISON CARDS ── */
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .compare-card {
+    background: var(--wp-mid);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .compare-card.featured {
+    border-color: var(--wp-accent);
+    background: linear-gradient(135deg, rgba(0,180,216,0.08), var(--wp-mid));
+  }
+  .compare-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(to right, transparent, var(--wp-accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .compare-card.featured::before { opacity: 1; }
+  .card-tag {
+    display: inline-block;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .tag-free { background: rgba(255,179,71,0.15); color: var(--wp-gold); }
+  .tag-pro { background: rgba(0,180,216,0.15); color: var(--wp-accent); }
+  .compare-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .compare-card .url {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+  .compare-list { list-style: none; }
+  .compare-list li {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.9rem; color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .compare-list li:last-child { border-bottom: none; }
+  .li-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+  .li-plus .li-icon { color: #4ADE80; }
+  .li-minus .li-icon { color: #F87171; }
+
+  /* ── 3 PILLARS ── */
+  .pillars-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .pillar {
+    background: var(--wp-mid);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 2rem;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .pillar:hover { transform: translateY(-4px); border-color: var(--wp-accent); }
+  .pillar-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 2.5rem; font-weight: 400;
+    color: rgba(0,180,216,0.2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .pillar h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.75rem; }
+  .pillar p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── DASHBOARD SHOWCASE ── */
+  .dashboard-wrap {
+    margin-top: 3rem;
+    background: var(--wp-mid);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    overflow: hidden;
+  }
+  .dash-topbar {
+    background: rgba(0,0,0,0.3);
+    padding: 0.75rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #FF6B6B; }
+  .dot-y { background: #FFD93D; }
+  .dot-g { background: #6BCB77; }
+  .dash-url {
+    flex: 1; text-align: center;
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(0,0,0,0.2);
+    padding: 0.3rem 1rem; border-radius: 0.5rem;
+    max-width: 300px; margin: 0 auto;
+  }
+  .dash-body {
+    display: grid; grid-template-columns: 220px 1fr;
+  }
+  .dash-sidebar {
+    background: rgba(0,0,0,0.2);
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+  }
+  .dash-sidebar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--wp-accent);
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+  }
+  .sidebar-section { margin-bottom: 1.25rem; }
+  .sidebar-section-label {
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(138,175,200,0.5);
+    padding: 0 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    cursor: default;
+    transition: background 0.2s, color 0.2s;
+  }
+  .sidebar-item.active {
+    background: rgba(0,180,216,0.12);
+    color: var(--wp-accent);
+  }
+  .sidebar-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+  .dash-main { padding: 1.5rem; }
+  .dash-main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+  .dash-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .dash-stat {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+  }
+  .dash-stat-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+  .dash-stat-value { font-size: 1.4rem; font-weight: 700; font-family: 'DM Mono', monospace; }
+  .dash-stat-value.blue { color: var(--wp-accent); }
+  .dash-stat-value.gold { color: var(--wp-gold); }
+  .dash-stat-value.green { color: #4ADE80; }
+  .dash-stat-value.red { color: #F87171; }
+  .dash-recent-label {
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 0.75rem;
+  }
+  .dash-posts { display: flex; flex-direction: column; gap: 0.5rem; }
+  .dash-post {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 0.6rem;
+    padding: 0.7rem 1rem;
+  }
+  .dp-title { font-size: 0.82rem; font-weight: 500; }
+  .dp-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem; }
+  .dp-badge {
+    font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 2rem;
+    font-weight: 500; letter-spacing: 0.05em;
+  }
+  .badge-pub { background: rgba(74,222,128,0.15); color: #4ADE80; }
+  .badge-draft { background: rgba(255,211,71,0.15); color: #FFD347; }
+
+  /* ── ROLE CARDS ── */
+  .roles-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+    margin-top: 3rem;
+  }
+  .role-card {
+    background: var(--wp-mid);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex; gap: 1rem;
+  }
+  .role-icon {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border-radius: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .role-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .role-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── TABS (Temas/Plugins) ── */
+  .tabs { margin-top: 3rem; }
+  .tab-buttons {
+    display: flex; gap: 0.5rem; margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 1rem;
+  }
+  .tab-btn {
+    background: none; border: 1px solid var(--border);
+    padding: 0.6rem 1.25rem; border-radius: 0.6rem;
+    color: var(--text-muted); font-size: 0.85rem; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: rgba(0,180,216,0.1);
+    border-color: var(--wp-accent);
+    color: var(--wp-accent);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .plugin-card {
+    background: var(--wp-mid);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    transition: border-color 0.3s;
+  }
+  .plugin-card:hover { border-color: var(--wp-accent); }
+  .plugin-card .plug-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .plugin-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .plugin-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+  .plug-tag {
+    display: inline-block; margin-top: 0.75rem;
+    font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 2rem;
+    background: rgba(0,180,216,0.1); color: var(--wp-accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── PROS/CONS ── */
+  .procon-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .procon-card {
+    background: var(--wp-mid);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 2rem;
+  }
+  .procon-card.pros { border-top: 3px solid #4ADE80; }
+  .procon-card.cons { border-top: 3px solid #F87171; }
+  .procon-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .procon-list { list-style: none; }
+  .procon-list li {
+    display: flex; gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.9rem; line-height: 1.6;
+  }
+  .procon-list li:last-child { border-bottom: none; }
+  .procon-list li span:first-child { flex-shrink: 0; margin-top: 2px; }
+  .procon-list li p { color: var(--text-muted); }
+  .procon-list li strong { color: var(--wp-white); }
+
+  /* ── CONCLUSION ── */
+  .conclusion {
+    background: linear-gradient(135deg, var(--wp-mid), rgba(0,115,170,0.2));
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    padding: 4rem;
+    margin-top: 3rem;
+    position: relative; overflow: hidden;
+  }
+  .conclusion::before {
+    content: '"';
+    position: absolute; top: -0.5rem; left: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 12rem; font-weight: 900;
+    color: rgba(0,180,216,0.05);
+    line-height: 1; pointer-events: none;
+  }
+  .conclusion-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    line-height: 1.7;
+    color: var(--wp-white);
+    max-width: 750px;
+    position: relative; z-index: 1;
+  }
+  .conclusion-text em { color: var(--wp-accent); font-style: normal; }
+  .conclusion-author {
+    margin-top: 2rem;
+    display: flex; align-items: center; gap: 1rem;
+    position: relative; z-index: 1;
+  }
+  .author-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--wp-blue), var(--wp-accent));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem;
+  }
+  .author-info { font-size: 0.85rem; }
+  .author-info strong { display: block; color: var(--wp-white); }
+  .author-info span { color: var(--text-muted); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+  footer span { color: var(--wp-accent); }
+
+  /* ── PROGRESS BAR ── */
+  .reading-bar {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: linear-gradient(to right, var(--wp-blue), var(--wp-accent));
+    z-index: 200; width: 0%; transition: width 0.1s;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    margin-top: 3rem;
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, var(--wp-accent), transparent);
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+  }
+  .tl-dot {
+    position: absolute; left: -2.4rem; top: 0.2rem;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--wp-accent);
+    border: 2px solid var(--wp-dark);
+    box-shadow: 0 0 0 3px rgba(0,180,216,0.2);
+  }
+  .tl-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; color: var(--wp-accent);
+    letter-spacing: 0.1em; margin-bottom: 0.25rem;
+  }
+  .tl-item h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .tl-item p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem; }
+    .nav-links { display: none; }
+    .compare-grid, .pillars-grid, .procon-grid, .roles-grid { grid-template-columns: 1fr; }
+    .tab-panel.active { grid-template-columns: 1fr; }
+    .dash-body { grid-template-columns: 1fr; }
+    .dash-sidebar { display: none; }
+    .dash-stats { grid-template-columns: repeat(2, 1fr); }
+    .conclusion { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reading-bar" id="readingBar"></div>
+
+<nav>
+  <div class="nav-logo">WORDPRESS</div>
+  <ul class="nav-links">
+    <li><a href="#intro">Introdução</a></li>
+    <li><a href="#comparacao">Comparação</a></li>
+    <li><a href="#infraestrutura">Infraestrutura</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#design">Design</a></li>
+    <li><a href="#analise">Análise</a></li>
+    <li><a href="#conclusao">Conclusão</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Trabalho de MA · Turma 1P · 2025 - 2026</div>
+    <h1>WordPress:<br><span>O Motor da</span><br>Web Moderna</h1>
+    <p class="hero-sub">Estudo profundo sobre a anatomia, funcionamento e impacto profissional do maior CMS do mundo.</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">Aluno</span>
+        <span class="meta-value">Filipe Portugal</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <span class="meta-label">Número</span>
+        <span class="meta-value">14812</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <span class="meta-label">Turma</span>
+        <span class="meta-value">1P</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <span class="meta-label">Data</span>
+        <span class="meta-value">Maio de 2026</span>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-number">43%</div>
+      <div class="stat-text">
+        <strong>de toda a internet</strong>
+        é movida por WordPress — mais de 4 em cada 10 sites.
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">scroll</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+      <div>
+        <p class="section-label">01 — Introdução</p>
+        <h2 class="section-title">O que é um CMS?</h2>
+        <p class="section-body">
+          O WordPress é classificado globalmente como um <strong>CMS — Content Management System</strong> (Sistema de Gestão de Conteúdos). Trata-se de uma aplicação que revolucionou a internet ao permitir que qualquer utilizador consiga criar, editar, organizar e publicar conteúdos na web <strong>sem escrever uma única linha de código</strong>.
+        </p>
+        <p class="section-body" style="margin-top: 1rem;">
+          Nascido em <strong>2003</strong> graças a Matt Mullenweg e Mike Little, começou como uma ferramenta para blogs e evoluiu para uma infraestrutura massiva capaz de criar desde portfólios simples até portais de notícias de grandes multinacionais.
+        </p>
+      </div>
+      <div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-year">2003</div>
+            <h4>Fundação</h4>
+            <p>Matt Mullenweg e Mike Little lançam o WordPress como uma plataforma de blogging simples.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-year">2010</div>
+            <h4>Expansão Global</h4>
+            <p>Introdução do repositório de plugins e temas. Ultrapassa os 10 milhões de instalações.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-year">2018</div>
+            <h4>Editor Gutenberg</h4>
+            <p>Lançamento do editor de blocos Gutenberg, democratizando o design visual da plataforma.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-year">2026</div>
+            <h4>Integração com IA</h4>
+            <p>WordPress integra ferramentas de Inteligência Artificial para criação automatizada de blocos e conteúdos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPARAÇÃO -->
+<section id="comparacao">
+  <div class="container">
+    <p class="section-label">02 — Comparação</p>
+    <h2 class="section-title">WordPress.com<br>vs. WordPress.org</h2>
+    <p class="section-body">Embora partilhem o mesmo nome, funcionam sob modelos de negócio e níveis de liberdade completamente opostos.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="card-tag tag-free">Plataforma Alojada</div>
+        <h3>WordPress.com</h3>
+        <div class="url">*.wordpress.com</div>
+        <ul class="compare-list">
+          <li class="li-plus"><span class="li-icon">✓</span><span>Alojamento incluído e gerido pela Automattic</span></li>
+          <li class="li-plus"><span class="li-icon">✓</span><span>Site online imediatamente, sem configurações técnicas</span></li>
+          <li class="li-minus"><span class="li-icon">✗</span><span>Utilizador não é dono do site</span></li>
+          <li class="li-minus"><span class="li-icon">✗</span><span>Publicidade forçada na versão gratuita</span></li>
+          <li class="li-minus"><span class="li-icon">✗</span><span>Impossível instalar plugins externos no plano free</span></li>
+          <li class="li-minus"><span class="li-icon">✗</span><span>Endereço sempre com ".wordpress.com"</span></li>
+        </ul>
+      </div>
+      <div class="compare-card featured">
+        <div class="card-tag tag-pro">Software Livre · Recomendado</div>
+        <h3>WordPress.org</h3>
+        <div class="url">o-teu-dominio.pt</div>
+        <ul class="compare-list">
+          <li class="li-plus"><span class="li-icon">✓</span><span>Liberdade absoluta e controlo total sobre o código</span></li>
+          <li class="li-plus"><span class="li-icon">✓</span><span>Instalar qualquer tema ou plugin do mercado</span></li>
+          <li class="li-plus"><span class="li-icon">✓</span><span>Monetização sem restrições</span></li>
+          <li class="li-plus"><span class="li-icon">✓</span><span>Domínio personalizado e profissional</span></li>
+          <li class="li-minus"><span class="li-icon">✗</span><span>Exige contratação de alojamento e domínio</span></li>
+          <li class="li-minus"><span class="li-icon">✗</span><span>Responsabilidade total pela manutenção e segurança</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INFRAESTRUTURA -->
+<section id="infraestrutura">
+  <div class="container">
+    <p class="section-label">03 — Infraestrutura</p>
+    <h2 class="section-title">Os 3 Pilares Técnicos</h2>
+    <p class="section-body">Para colocar um site WordPress.org em funcionamento, é obrigatório conjugar três elementos fundamentais.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="pillar-num">01</div>
+        <h3>Domínio</h3>
+        <p>A identidade digital e o endereço exclusivo que os utilizadores digitam no navegador para aceder ao site. Exemplo: <code style="color:var(--wp-accent); font-family:'DM Mono',monospace; font-size:0.85em;">www.a-tua-empresa.pt</code></p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">02</div>
+        <h3>Alojamento Web</h3>
+        <p>Aluguer de espaço num servidor físico ligado à internet 24h/dia. Armazena todos os ficheiros de imagem, folhas de estilo e código do site.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">03</div>
+        <h3>Base de Dados</h3>
+        <p>MySQL ou MariaDB. Armazena textos, palavras-passe, configurações e comentários de forma estruturada. Comunica com o software em tempo real a cada carregamento de página.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <div class="container">
+    <p class="section-label">04 — Painel de Administração</p>
+    <h2 class="section-title">Anatomia do Dashboard</h2>
+    <p class="section-body">A área de gestão privada, protegida por credenciais. É aqui que se controla toda a vida do projeto — desde a criação de conteúdos até à gestão de utilizadores.</p>
+
+    <div class="dashboard-wrap">
+      <div class="dash-topbar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <div class="dash-url">www.o-teu-site.pt/wp-admin</div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-sidebar">
+          <div class="dash-sidebar-logo">WP Admin</div>
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">Conteúdo</div>
+            <div class="sidebar-item active"><span class="sidebar-dot"></span> Painel</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Artigos</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Média</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Páginas</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Comentários</div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">Aparência</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Temas</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Menus</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Editor</div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-section-label">Sistema</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Plugins</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Utilizadores</div>
+            <div class="sidebar-item"><span class="sidebar-dot"></span> Definições</div>
+          </div>
+        </div>
+        <div class="dash-main">
+          <div class="dash-main-title">Visão Geral do Site</div>
+          <div class="dash-stats">
+            <div class="dash-stat">
+              <div class="dash-stat-label">Artigos</div>
+              <div class="dash-stat-value blue">24</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Páginas</div>
+              <div class="dash-stat-value gold">8</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Comentários</div>
+              <div class="dash-stat-value green">142</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Pendentes</div>
+              <div class="dash-stat-value red">3</div>
+            </div>
+          </div>
+          <div class="dash-recent-label">Artigos Recentes</div>
+          <div class="dash-posts">
+            <div class="dash-post">
+              <div>
+                <div class="dp-title">Como otimizar o SEO do teu site em 2026</div>
+                <div class="dp-meta">Por Administrador · há 2 horas</div>
+              </div>
+              <div class="dp-badge badge-pub">Publicado</div>
+            </div>
+            <div class="dash-post">
+              <div>
+                <div class="dp-title">Guia completo de WooCommerce para iniciantes</div>
+                <div class="dp-meta">Por Editor · há 1 dia</div>
+              </div>
+              <div class="dp-badge badge-pub">Publicado</div>
+            </div>
+            <div class="dash-post">
+              <div>
+                <div class="dp-title">Os melhores temas WordPress gratuitos de 2026</div>
+                <div class="dp-meta">Por Autor · há 3 dias</div>
+              </div>
+              <div class="dp-badge badge-draft">Rascunho</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Funções/Permissões -->
+    <div style="margin-top: 3rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem;">Perfis de Utilizador</h3>
+      <p class="section-body" style="margin-bottom: 0;">O WordPress permite gestão avançada de equipas através de diferentes níveis de permissão.</p>
+    </div>
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="role-icon" style="background: rgba(248,113,113,0.15); color:#F87171;">👑</div>
+        <div>
+          <h4>Administrador</h4>
+          <p>Controlo absoluto sobre o sistema. Pode apagar o site, alterar código e gerir faturação. Acesso total a todas as funcionalidades.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon" style="background: rgba(0,180,216,0.15); color:var(--wp-accent);">✏️</div>
+        <div>
+          <h4>Editor</h4>
+          <p>Gere e publica conteúdos de todos os autores. Sem acesso às configurações de design ou instalação de plugins.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon" style="background: rgba(74,222,128,0.15); color:#4ADE80;">📝</div>
+        <div>
+          <h4>Autor</h4>
+          <p>Cria e publica apenas os seus próprios artigos. Não pode gerir conteúdos de outros utilizadores.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon" style="background: rgba(255,179,71,0.15); color:var(--wp-gold);">💬</div>
+        <div>
+          <h4>Colaborador</h4>
+          <p>Escreve artigos mas não os pode publicar diretamente. Aguarda aprovação de um editor ou administrador.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DESIGN & PLUGINS -->
+<section id="design">
+  <div class="container">
+    <p class="section-label">05 — Temas & Plugins</p>
+    <h2 class="section-title">Estética e Funcionalidade</h2>
+    <p class="section-body">A separação total entre conteúdo e apresentação visual é uma das maiores qualidades técnicas do WordPress — gerida por Temas e expandida por Plugins.</p>
+
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab('temas', this)">🎨 Temas</button>
+        <button class="tab-btn" onclick="switchTab('plugins', this)">🔧 Plugins</button>
+        <button class="tab-btn" onclick="switchTab('conteudo', this)">📄 Conteúdo</button>
+      </div>
+
+      <div id="temas" class="tab-panel active">
+        <div class="plugin-card">
+          <div class="plug-icon">🖥️</div>
+          <h4>O que é um Tema?</h4>
+          <p>Conjunto de ficheiros que define o layout, paletas de cores, estilos de letra e aspeto dos menus. Trocar o tema muda toda a estética sem alterar o conteúdo.</p>
+          <span class="plug-tag">Design</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plug-icon">🧩</div>
+          <h4>Gutenberg</h4>
+          <p>Editor nativo de blocos do WordPress. Filosofia Drag & Drop para criar páginas complexas sem código CSS.</p>
+          <span class="plug-tag">Editor Nativo</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plug-icon">⚡</div>
+          <h4>Elementor</h4>
+          <p>Constructor visual externo e popular. Permite desenhar páginas em tempo real com colunas, botões, vídeos e animações avançadas.</p>
+          <span class="plug-tag">Page Builder</span>
+        </div>
+      </div>
+
+      <div id="plugins" class="tab-panel">
+        <div class="plugin-card">
+          <div class="plug-icon">🛡️</div>
+          <h4>Wordfence Security</h4>
+          <p>Antivírus e firewall em tempo real. Bloqueia ataques de força bruta, analisa ficheiros em busca de código malicioso e alerta sobre vulnerabilidades.</p>
+          <span class="plug-tag">Segurança</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plug-icon">🛒</div>
+          <h4>WooCommerce</h4>
+          <p>Transforma qualquer site numa loja virtual avançada com carrinho de compras, gestão de stocks, portes de envio e métodos de pagamento (MBWay, PayPal, cartões).</p>
+          <span class="plug-tag">E-commerce</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plug-icon">📊</div>
+          <h4>Yoast SEO</h4>
+          <p>Ferramenta de otimização para motores de busca. Analisa conteúdos e ajuda a melhorar o posicionamento orgânico no Google.</p>
+          <span class="plug-tag">SEO</span>
+        </div>
+      </div>
+
+      <div id="conteudo" class="tab-panel">
+        <div class="plugin-card">
+          <div class="plug-icon">📑</div>
+          <h4>Páginas</h4>
+          <p>Para conteúdo estático e intemporal. Sem data de publicação. Ideal para "Quem Somos", "Contactos" e Políticas de Privacidade.</p>
+          <span class="plug-tag">Estático</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plug-icon">📰</div>
+          <h4>Artigos (Posts)</h4>
+          <p>Para conteúdos cronológicos: notícias, blog, comunicados. Organizados do mais recente para o mais antigo. Com sistema de comentários nativo.</p>
+          <span class="plug-tag">Dinâmico</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plug-icon">🏷️</div>
+          <h4>Categorias & Tags</h4>
+          <p>Sistema de organização rigoroso que permite ao leitor navegar pelos temas. As Categorias organizam, as Tags descrevem com precisão.</p>
+          <span class="plug-tag">Taxonomia</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ANÁLISE CRÍTICA -->
+<section id="analise">
+  <div class="container">
+    <p class="section-label">06 — Análise Crítica</p>
+    <h2 class="section-title">Vantagens e Desvantagens</h2>
+    <p class="section-body">A adoção do WordPress deve ser avaliada de forma ponderada, contrapondo as suas virtudes com os seus desafios técnicos.</p>
+
+    <div class="procon-grid">
+      <div class="procon-card pros">
+        <div class="procon-title"><span>✅</span> Pontos Fortes</div>
+        <ul class="procon-list">
+          <li>
+            <span>🎯</span>
+            <p><strong>Acessibilidade</strong> — Interface amigável que permite gestão autónoma por clientes e equipas de marketing sem conhecimentos técnicos.</p>
+          </li>
+          <li>
+            <span>🌍</span>
+            <p><strong>Comunidade Global</strong> — Milhões de fóruns, tutoriais e programadores focados em resolver problemas comuns, facilitando o suporte.</p>
+          </li>
+          <li>
+            <span>🔍</span>
+            <p><strong>SEO Nativo</strong> — Código base construído para ser limpo e compreensível, facilitando a indexação e bom posicionamento no Google.</p>
+          </li>
+          <li>
+            <span>💰</span>
+            <p><strong>Custo Reduzido</strong> — Software gratuito e open-source. Custos resumem-se ao domínio e alojamento, acessíveis a pequenas empresas.</p>
+          </li>
+        </ul>
+      </div>
+      <div class="procon-card cons">
+        <div class="procon-title"><span>⚠️</span> Pontos Fracos</div>
+        <ul class="procon-list">
+          <li>
+            <span>🔄</span>
+            <p><strong>Manutenção Contínua</strong> — O núcleo, temas e plugins exigem atualizações constantes. Ignorá-las pode quebrar o layout ou criar incompatibilidades.</p>
+          </li>
+          <li>
+            <span>🔒</span>
+            <p><strong>Vulnerabilidades de Segurança</strong> — Palavras-passe fracas, alojamentos de má qualidade ou plugins obsoletos tornam o site permeável a invasões.</p>
+          </li>
+          <li>
+            <span>⚡</span>
+            <p><strong>Performance</strong> — Com muitos plugins ativos, o site pode tornar-se lento sem otimização adequada de caching e imagens.</p>
+          </li>
+          <li>
+            <span>📈</span>
+            <p><strong>Curva de Aprendizagem</strong> — Apesar da interface amigável, dominar WordPress.org a nível profissional exige tempo e prática consideráveis.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONCLUSÃO -->
+<section id="conclusao">
+  <div class="container">
+    <p class="section-label">07 — Conclusão</p>
+    <h2 class="section-title">Reflexão Final</h2>
+
+    <div class="conclusion">
+      <p class="conclusion-text">
+        O WordPress consolidou a sua liderança porque implementou um conceito nobre: <em>a democratização da internet</em>. Ao retirar o monopólio da criação web das mãos dos programadores, permitiu que pequenas empresas, artesãos e marcas locais construíssem uma presença digital robusta com <em>custos drasticamente reduzidos</em>. Olhando para o meu futuro profissional, o domínio técnico do WordPress não é apenas uma competência extra — é uma <em>ferramenta obrigatória de sobrevivência no mercado</em>.
+      </p>
+      <div class="conclusion-author">
+        <div class="author-avatar">[I]</div>
+        <div class="author-info">
+          <strong>Filipe Portugal</strong>
+          <span>Turma 1P · Maio 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Futuro -->
+    <div style="margin-top: 3rem; display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem;">
+      <div class="pillar">
+        <div class="pillar-num" style="font-size:2rem;">🤖</div>
+        <h3>IA no WordPress</h3>
+        <p>Integração profunda de Inteligência Artificial para criação automatizada de blocos e escrita de conteúdos.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num" style="font-size:2rem;">🌐</div>
+        <h3>Full-Site Editing</h3>
+        <p>Evolução do editor de blocos para controlo total da estrutura e design de todo o site sem código.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num" style="font-size:2rem;">📱</div>
+        <h3>Mobile-First</h3>
+        <p>Cada vez mais focado em experiências mobile perfeitas, com temas responsivos nativos e performance otimizada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>WordPress: O Motor da Web Moderna</p>
+  <p style="margin-top: 0.5rem;">Obrigado pela vossa atenção! Qualquer dúvida, estou disponível para discutir os detalhes técnicos e criativos deste projeto.</p>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('readingBar').style.width = progress + '%';
+  });
+
+  // Tab switching
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Intersection observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.pillar, .compare-card, .plugin-card, .role-card, .procon-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
